@@ -3,13 +3,13 @@ from sqlalchemy import create_engine
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import QueuePool
-
+from urllib.parse import quote_plus
 
 class DBConnection:
     def __init__(self, pool_size=5, max_overflow=10):
         db_host = config("db_host")
         db_user = config("db_user")
-        db_pass = config("db_pass")
+        db_pass = quote_plus(config("db_pass"))
         db_name = config("db_name")
         self.db_engine = create_engine(
             url=f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:3306/{db_name}',

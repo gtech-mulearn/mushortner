@@ -23,7 +23,7 @@ class UrlShortnerAPI(Resource):
         }
 
 
-api.add_resource(UrlShortnerAPI, '/get/<string:short_url>/')
+api.add_resource(UrlShortnerAPI, '/r/<string:short_url>/')
 
 if __name__ == '__main__':
     app.run(debug=True)
