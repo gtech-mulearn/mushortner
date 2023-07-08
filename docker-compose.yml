@@ -1,0 +1,15 @@
+version: '3'
+services:
+  urlshortner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: urlshortner
+    image: urlshortner
+    restart: always
+    ports:
+      - "8002:8000"
+    volumes:
+      - /var/log/mulearnbackend:/var/log/mulearnbackend
+    env_file:
+      - .env
