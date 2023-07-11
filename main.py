@@ -1,8 +1,7 @@
 from flask import Flask, redirect
 from flask_restful import Resource, Api
-
+import sys
 from models.connection import DBConnection
-
 app = Flask(__name__)
 api = Api(app)
 db = DBConnection()
@@ -25,5 +24,3 @@ class UrlShortnerAPI(Resource):
 
 api.add_resource(UrlShortnerAPI, '/r/<string:short_url>/')
 
-if __name__ == '__main__':
-    app.run(debug=True)

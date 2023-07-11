@@ -7,12 +7,13 @@ from urllib.parse import quote_plus
 
 class DBConnection:
     def __init__(self, pool_size=5, max_overflow=10):
-        db_host = config("db_host")
-        db_user = config("db_user")
-        db_pass = quote_plus(config("db_pass"))
-        db_name = config("db_name")
+        db_host = config("DB_HOST")
+        db_user = config("DB_USER")
+        db_pass = quote_plus(config("DB_PASS"))
+        db_name = config("DB_NAME")
+        db_port = config("DB_PORT")
         self.db_engine = create_engine(
-            url=f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:3306/{db_name}',
+            url=f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}',
             poolclass=QueuePool,
             pool_size=pool_size,
             max_overflow=max_overflow
