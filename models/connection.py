@@ -16,7 +16,8 @@ class DBConnection:
             url=f'mysql+pymysql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}',
             poolclass=QueuePool,
             pool_size=pool_size,
-            max_overflow=max_overflow
+            max_overflow=max_overflow,
+            pool_pre_ping=True
         )
 
     def execute(self, query, params=None):
