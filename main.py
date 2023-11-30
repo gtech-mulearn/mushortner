@@ -1,25 +1,21 @@
+import requests
+import sys
+import uuid
 from flask import Flask, redirect, request
 from flask_restful import Resource, Api
 from user_agents import parse
-import sys
+
 from models.connection import DBConnection
-import uuid
-import requests
 
 app = Flask(__name__)
 api = Api(app)
 db = DBConnection()
 
 
-def get_ip():
-    response = requests.get('https://api64.ipify.org?format=json').json()
-    return response["ip"]
-
-
 class UrlShortnerAPI(Resource):
     def get(self, short_url):
         user_agent_string = request.headers.get('User-Agent')
-        user_ip = get_ip()
+        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
         user_agent = parse(user_agent_string)
         browser = user_agent.browser.family
         browser_version = user_agent.browser.version_string
