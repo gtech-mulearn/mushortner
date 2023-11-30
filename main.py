@@ -4,8 +4,9 @@ import uuid
 from flask import Flask, redirect, request
 from flask_restful import Resource, Api
 from user_agents import parse
-from utlis.utils import DateTimeUtils
+
 from models.connection import DBConnection
+from utlis.utils import DateTimeUtils
 
 app = Flask(__name__)
 api = Api(app)
@@ -47,7 +48,7 @@ class UrlShortnerAPI(Resource):
                 'location': location,
                 'referrer': referrer,
                 'url_shortener_id': url_shortener_id,
-                'created_at':DateTimeUtils.get_current_utc_time()
+                'created_at': DateTimeUtils.get_current_utc_time()
             }
             db.execute(query, params)
 
