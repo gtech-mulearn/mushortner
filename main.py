@@ -1,25 +1,21 @@
+import requests
+import sys
+import uuid
 from flask import Flask, redirect, request
 from flask_restful import Resource, Api
 from user_agents import parse
-import sys
+
 from models.connection import DBConnection
-import uuid
-import requests
 
 app = Flask(__name__)
 api = Api(app)
 db = DBConnection()
 
 
-def get_ip():
-    response = requests.get('https://api64.ipify.org?format=json').json()
-    return response["ip"]
-
-
 class UrlShortnerAPI(Resource):
     def get(self, short_url):
         user_agent_string = request.headers.get('User-Agent')
-        user_ip = get_ip()
+        user_ip = request.headers.get('X-Forwarded-For', request.remote_addr)
         user_agent = parse(user_agent_string)
         browser = user_agent.browser.family
         browser_version = user_agent.browser.version_string
@@ -37,7 +33,6 @@ class UrlShortnerAPI(Resource):
 
         if url_shortener_id_result:
             url_shortener_id = url_shortener_id_result[0]
-            print("urlid", url_shortener_id)
             query = "INSERT INTO url_shortener_tracker (id, ip_address, device_type, operating_system, browser, version, city, region, country, location, referrer, url_shortener_id ) VALUES (:id, :ip_address, :device_type, :operating_system, :browser, :version, :city, :region, :country, :location, :referrer, :url_shortener_id)"
             params = {
                 'id': str(uuid.uuid4()),
@@ -57,13 +52,10 @@ class UrlShortnerAPI(Resource):
 
         query = "SELECT long_url, count FROM `url_shortener` where short_url = :short_url; "
         params = {'short_url': short_url}
-        print(params)
         url = db.fetch_one(query, params)
-        print("url", url)
         if url:
             long_url, count = url
             count += 1
-            print(count)
             update_query = "UPDATE `url_shortener` SET count = :count WHERE short_url = :short_url"
             update_params = {'count': count, 'short_url': short_url}
             db.execute(update_query, update_params)
