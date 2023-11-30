@@ -6,6 +6,7 @@ from flask_restful import Resource, Api
 from user_agents import parse
 
 from models.connection import DBConnection
+from utlis.utils import DateTimeUtils
 
 app = Flask(__name__)
 api = Api(app)
@@ -33,7 +34,7 @@ class UrlShortnerAPI(Resource):
 
         if url_shortener_id_result:
             url_shortener_id = url_shortener_id_result[0]
-            query = "INSERT INTO url_shortener_tracker (id, ip_address, device_type, operating_system, browser, version, city, region, country, location, referrer, url_shortener_id ) VALUES (:id, :ip_address, :device_type, :operating_system, :browser, :version, :city, :region, :country, :location, :referrer, :url_shortener_id)"
+            query = "INSERT INTO url_shortener_tracker (id, ip_address, device_type, operating_system, browser, version, city, region, country, location, referrer, url_shortener_id,created_at ) VALUES (:id, :ip_address, :device_type, :operating_system, :browser, :version, :city, :region, :country, :location, :referrer, :url_shortener_id)"
             params = {
                 'id': str(uuid.uuid4()),
                 'ip_address': user_ip,
@@ -47,6 +48,7 @@ class UrlShortnerAPI(Resource):
                 'location': location,
                 'referrer': referrer,
                 'url_shortener_id': url_shortener_id,
+                'created_at': DateTimeUtils.get_current_utc_time()
             }
             db.execute(query, params)
 
