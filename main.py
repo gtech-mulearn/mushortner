@@ -34,7 +34,7 @@ class UrlShortnerAPI(Resource):
 
         if url_shortener_id_result:
             url_shortener_id = url_shortener_id_result[0]
-            query = "INSERT INTO url_shortener_tracker (id, ip_address, device_type, operating_system, browser, version, city, region, country, location, referrer, url_shortener_id,created_at ) VALUES (:id, :ip_address, :device_type, :operating_system, :browser, :version, :city, :region, :country, :location, :referrer, :url_shortener_id)"
+            query = "INSERT INTO url_shortener_tracker (id, ip_address, device_type, operating_system, browser, version, city, region, country, location, referrer, url_shortener_id,created_at) VALUES (:id, :ip_address, :device_type, :operating_system, :browser, :version, :city, :region, :country, :location, :referrer, :url_shortener_id,:created_at)"
             params = {
                 'id': str(uuid.uuid4()),
                 'ip_address': user_ip,
@@ -50,11 +50,14 @@ class UrlShortnerAPI(Resource):
                 'url_shortener_id': url_shortener_id,
                 'created_at': DateTimeUtils.get_current_utc_time()
             }
+            print(params)
             db.execute(query, params)
 
         query = "SELECT long_url, count FROM `url_shortener` where short_url = :short_url; "
         params = {'short_url': short_url}
+
         url = db.fetch_one(query, params)
+        print(url)
         if url:
             long_url, count = url
             count += 1
